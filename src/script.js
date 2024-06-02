@@ -1,27 +1,62 @@
-let numeroAleatorio = 0;
+let numeroAleatorio = Math.floor(Math.random() * 100) + 1;
 let tentativas = 0;
+let palpitesErrados = [];
 
 function jogoDeAdivinhacao() {
-    /*
-    Guiado
-    ---
-    1. Não aceita palpite vazio
-    2. Dar dicas a cada palpite (maior ou menor)
-    3. Atualizar a pontuação a cada palpite errado
-    4. Mostrar todos os palpites errados
-    5. Deve-se poder reiniciar o jogo a qualquer momento
-    6. Se a pontuação chegar a zero, deve ser exibido um alerta e reiniciado o jogo
-    
-    Individual
-    ---
-    7. Só deve aceitar numeros entre 1 e 100
-    8. Não deve aceitar palpite repetido
-    */
+    const palpiteDigitado = pegarPalpiteDigitado();
+            
+    if (!palpiteDigitado) {
+        alert("Digite um valor válido");
+        return;
+    } else if (palpiteDigitado < 1) {
+        alert("O número deve estar entre 1 e 100");
+        return;
+    } else if (palpiteDigitado > 100) {
+        alert("O número deve estar entre 1 e 100");
+        return;
+    }
 
+    if (palpitesErrados.includes(palpiteDigitado)) {
+        alert("Não é permitido inserir números repetidos, tente novamente.");
+        return;
+    }
 
-    // to-do
+    if (palpiteDigitado === numeroAleatorio) {
+        alert ("Parabéns, você adivinhou!");
+        reiniciarJogo();
+        return;
+    } else if (palpiteDigitado > numeroAleatorio) {
+        tentativas++;
+        atualizarFeedback ("Esse número é muito alto, tente novamente.");
+    } else if (palpiteDigitado < numeroAleatorio)  { 
+        tentativas++;
+        atualizarFeedback ("Esse número é muito baixo, tente novamente.");
+    }
+
+    palpitesErrados.push(palpiteDigitado);
+
+    atualizarPalpitesFalhos(palpitesErrados.join(', '));
+
+    const novaPontuacao = 100 - (tentativas * 10);
+    atualizarPontuacao(novaPontuacao);
+
+       const pontuacaoAtual = pegarPontuacao();
+    if (pontuacaoAtual === "Você tem 0 pontos") {
+        alert("deu ruim, daqui não passarás!");
+        reiniciarJogo();
+    }
 }
 
 function reiniciarJogo() {
-    // to-do
+    const vaiReiniciar = confirm("Deseja sair do jogo atual e começar um novo jogo?");
+
+    if(vaiReiniciar === true) {
+        numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+        tentativas = 0;
+        palpitesErrados = [];
+        atualizarPalpitesFalhos("");
+        atualizarPontuacao(100);
+        atualizarFeedback("");
+        limparPalpiteDigitado();
+    }
 }
